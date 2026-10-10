@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#efe0c6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="LilDough">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="LilDough: Brotplan mit Erinnerungen, Rechner, Coach und deinem eigenen Starter.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LilDough">
+<meta property="og:title" content="LilDough">
+<meta property="og:description" content="Brotplan mit Erinnerungen, Rechner, Coach und deinem eigenen Starter.">
+<meta property="og:url" content="https://gamekhinte.github.io/sauerteig/">
+<meta property="og:image" content="https://gamekhinte.github.io/sauerteig/icon-512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:locale" content="de_DE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LilDough">
+<meta name="twitter:description" content="Brotplan mit Erinnerungen, Rechner, Coach und deinem eigenen Starter.">
+<meta name="twitter:image" content="https://gamekhinte.github.io/sauerteig/icon-512.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>try{var th=JSON.parse(localStorage.getItem('sb_theme'));if(th==='dark'||th==='light')document.documentElement.setAttribute('data-theme',th)}catch(e){}</script>
+<link rel="stylesheet" href="styles.css?v=30">
+<title>LilDough</title>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-bread" viewBox="0 0 24 24"><path d="M5 11c-1.5-1-2-2.5-2-4 0-2 2-4 5-4h8c3 0 5 2 5 4 0 1.5-.5 3-2 4v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M9 8l1.5 3M13.5 8l1.5 3"/></symbol>
+  <symbol id="i-calc" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h8"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.5 7.2L4 21l1.8-5.5A8 8 0 1 1 21 12z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+  <symbol id="i-jar" viewBox="0 0 24 24"><path d="M8 3h8v3H8z"/><path d="M6 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M6 13h12"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11h6M9 15h6"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v6M14 10v6"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M14 3v5h5M8 13h8M8 17h6"/></symbol>
+</defs></svg>
+<header><h1>LILDOUGH</h1></header>
+<div id="banner" class="banner" role="status" aria-live="polite" hidden></div>
+<main>
+
+<section id="tab-bake" class="tab active">
+  <div id="setup" class="card">
+    <h2>NEUES BROT</h2>
+    <div class="row" id="amountRow">
+      <label>Für wie viele Personen?
+        <input type="number" id="persons" min="1" max="50" value="4" inputmode="numeric" placeholder="z. B. 4"></label>
+      <label>oder Mehl in g
+        <input type="number" id="flourG" min="50" max="5000" inputmode="numeric" placeholder="optional"></label>
+    </div>
+    <label id="scaleL" hidden>Rezept skalieren (Faktor)
+      <input type="number" id="scale" min="0.1" max="20" step="0.1" value="1" inputmode="decimal"></label>
+    <label>Welche Brotsorte?
+      <select id="bread"><option>Lade Sorten…</option></select></label>
+    <p id="breadInfo" class="muted" style="margin-top:0"></p>
+    <p id="allergy" class="muted allergy" style="margin-top:0"></p>
+    <div id="ckMatch"></div>
+    <label><span class="tempLbl">Raumtemperatur (°C)</span><input type="number" class="tempIn" inputmode="numeric"></label>
+    <p class="muted tempNote" style="margin-top:0"></p>
+    <label data-min="fort">Wo stehst du gerade?
+      <select id="fromStep"></select></label>
+    <label data-min="fort">Starter füttern im Verhältnis
+      <select id="ratio"></select></label>
+    <div class="seg" id="modeSeg">
+      <button type="button" id="mStart" class="on">Startzeit festlegen</button>
+      <button type="button" id="mEnd">Zielzeit festlegen</button>
+    </div>
+    <label id="goalL" hidden>Was soll dann fertig sein?
+      <select id="goal">
+        <option value="oven">Backbeginn im Ofen</option>
+        <option value="out">Brot kommt aus dem Ofen</option>
+        <option value="eat">Essfertig (ausgekühlt)</option>
+      </select></label>
+    <label><span id="startLbl">Wann startest du?</span>
+      <input type="datetime-local" id="start"></label>
+    <p id="planPrev" class="muted"></p>
+    <button id="makePlan" class="btn">PLAN ERSTELLEN</button>
+  </div>
+  <div id="plan" hidden>
+    <div class="card">
+      <h2 id="planTitle"></h2>
+      <div id="planIngr" class="ingr"></div>
+      <p id="planFit" class="muted" data-min="fort" style="margin-top:0"></p>
+      <p id="planEta" class="muted" style="margin-top:0"></p>
+      <label><span class="tempLbl">Raumtemperatur (°C)</span><input type="number" class="tempIn" inputmode="numeric"></label>
+      <p class="muted tempNote" style="margin-top:0"></p>
+      <button class="btn stop" id="newBake"><svg class="ic"><use href="#i-stop"/></svg> STOPPEN UND ALLES LÖSCHEN</button>
+    </div>
+    <div class="card">
+      <h2>ERINNERUNGEN</h2>
+      <p class="muted" data-notif></p>
+      <p class="muted">Wenn ein Schritt fertig ist, kommt eine Mitteilung, auch bei geschlossener App (Push, kann bis zu 30 Sekunden dauern). Auf dem iPhone klappt das nur, wenn die App über „Zum Home-Bildschirm“ installiert ist. Zur Sicherheit kannst du den Ablauf auch in deinen Kalender laden.</p>
+      <div class="row"><button class="btn" id="notifBtn">AKTIVIEREN</button><button class="btn ghost" id="icsBtn">IN KALENDER</button></div>
+    </div>
+    <div id="steps"></div>
+  </div>
+  <div class="card">
+    <h2><svg class="ic"><use href="#i-moon"/></svg> RUHEZEIT</h2>
+    <label class="chk"><input type="checkbox" id="qOn">In dieser Zeit soll nichts anstehen</label>
+    <div id="qWins"></div>
+    <button class="btn ghost" id="qAdd" type="button"><svg class="ic"><use href="#i-plus"/></svg> ZEITFENSTER</button>
+    <p class="muted" style="margin-bottom:0">In der Ruhezeit startet und meldet sich nichts. Lange Gehzeiten über Nacht gehen trotzdem, der nächste Schritt beginnt dann erst, wenn die Ruhezeit vorbei ist.</p>
+  </div>
+
+  <div class="card" id="journal">
+    <h2>BACK-TAGEBUCH</h2>
+    <p class="muted" id="jInfo" style="margin-top:0"></p>
+    <button class="btn" id="jNew">NEUER EINTRAG</button>
+    <div id="jForm" hidden>
+      <label>Name des Brots<input id="jBread" maxlength="60" placeholder="z. B. Dinkelbrot" autocomplete="off"></label>
+      <p class="lbl">Bewertung</p><div class="chips stars" id="jStars"></div>
+      <div class="row">
+        <label><span class="tempLbl">Raumtemperatur (°C)</span><input type="number" id="jTemp" inputmode="numeric"></label>
+        <label>Gesamtdauer (Std)<input type="number" id="jHours" min="0" step="0.5" inputmode="decimal"></label>
+      </div>
+      <label>Notiz<textarea id="jNote" rows="3" maxlength="400" placeholder="z. B. Krume, Kruste, Geschmack …"></textarea></label>
+      <img id="jPrev" class="recimg" alt="" hidden>
+      <input type="file" id="jPhoto" accept="image/*" hidden>
+      <button class="btn ghost" id="jPhotoBtn" type="button" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px"><svg class="ic"><use href="#i-image"/></svg> FOTO</button>
+      <div class="row"><button class="btn" id="jSave" type="button">SPEICHERN</button><button class="btn ghost" id="jCancel" type="button">ABBRECHEN</button></div>
+    </div>
+    <div id="jList" class="jlist"></div>
+  </div>
+</section>
+
+<section id="tab-calc" class="tab">
+  <div class="card">
+    <h2>RECHNER</h2>
+    <label>Brotsorte<select id="cBread"></select></label>
+    <div class="row">
+      <label>Personen<input type="number" id="cPersons" min="1" max="50" inputmode="numeric" placeholder="z. B. 4"></label>
+      <label>oder Mehl in g
+        <input type="number" id="cAmount" min="1" inputmode="decimal" placeholder="z. B. 80"></label>
+    </div>
+    <div id="cResult" class="ingr"></div>
+    <p class="muted">Der Starter besteht je zur Hälfte aus Mehl und Wasser. Das ist unten schon eingerechnet, du musst nichts abziehen.</p>
+  </div>
+  <div class="card" data-min="fort">
+    <h2>WASSER-GUIDE</h2>
+    <p class="muted" style="margin-top:0">Jedes Mehl nimmt unterschiedlich viel Wasser auf. Such dein Mehl aus und gib die Menge ein.</p>
+    <div class="row">
+      <label>Mehlsorte<select id="wFlour"></select></label>
+      <label>Mehl in g<input type="number" id="wAmount" value="500" min="1" inputmode="decimal"></label>
+    </div>
+    <div id="wResult" class="ingr"></div>
+    <p id="wTip" class="muted"></p>
+    <p class="muted">Das sind nur Richtwerte, je nach Mehl und Quellzeit kann es abweichen. Lass beim ersten Mischen 20 bis 30 g Wasser weg und gib sie dazu, wenn der Teig sie braucht.</p>
+  </div>
+</section>
+
+<section id="tab-more" class="tab">
+  <div class="card">
+    <h2>MEHR</h2>
+    <div class="menu">
+      <button type="button" data-go="chat"><svg class="ic"><use href="#i-chat"/></svg><b>Brot-Coach</b><span>Fragen und Foto-Check</span></button>
+      <button type="button" data-go="pet"><svg class="ic"><use href="#i-jar"/></svg><b>Starter</b><span>Dein Starter, Füttern und Peak-Tagebuch</span></button>
+      <button type="button" data-go="ck"><svg class="ic"><use href="#i-book"/></svg><b>Rezepte</b><span>Links, Ordner und Notizen</span></button>
+      <button type="button" data-go="set"><svg class="ic"><use href="#i-gear"/></svg><b>Optionen</b><span>Erfahrung, Sprache, Daten und Hilfe</span></button>
+    </div>
+  </div>
+</section>
+
+<section id="tab-chat" class="tab">
+  <button type="button" class="back" data-go="more"><svg class="ic"><use href="#i-back"/></svg>MEHR</button>
+  <div class="card chat">
+    <h2>BROT-COACH</h2>
+    <details id="keyBox" class="keybox">
+      <summary><svg class="ic"><use href="#i-key"/></svg> API KEY <span id="keyState"></span></summary>
+      <input type="password" id="keyIn" placeholder="API Key einfügen" autocomplete="off">
+      <div class="row"><button class="btn" id="keySave">SPEICHERN</button><button class="btn ghost" id="keyDel">LÖSCHEN</button></div>
+      <p class="muted">Gibt es kostenlos auf aistudio.google.com/apikey. Der Key bleibt in diesem Browser und geht nur an Google.</p>
+    </details>
+    <div id="chatLog" class="log" aria-live="polite"></div>
+    <div id="qrow" class="qrow"></div>
+    <div id="pend" class="pend" hidden><img id="pendImg" alt="Foto"><button class="x" id="pendX" aria-label="Foto entfernen"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="row">
+      <button class="btn ghost sq" id="imgBtn" aria-label="Foto anhängen"><svg class="ic"><use href="#i-image"/></svg></button>
+      <input type="file" id="imgIn" accept="image/*" hidden>
+      <input id="chatIn" placeholder="Frag etwas zu deinem Teig…" enterkeyhint="send">
+      <button class="btn sq" id="chatSend" aria-label="Senden"><svg class="ic"><use href="#i-send"/></svg></button>
+    </div>
+    <p class="muted" style="margin:10px 0 0">Fotos werden vorher verkleinert, damit sie schnell ankommen.</p>
+  </div>
+</section>
+
+<section id="tab-pet" class="tab">
+  <button type="button" class="back" data-go="more"><svg class="ic"><use href="#i-back"/></svg>MEHR</button>
+  <div id="petNew" class="card" hidden>
+    <h2>STARTER ANLEGEN</h2>
+    <p class="muted" style="margin-top:0">Wie heißt dein Starter, wie alt ist er und wann hast du ihn zuletzt gefüttert?</p>
+    <label>Name<input id="nName" maxlength="16" placeholder="z. B. Hanz" autocomplete="off"></label>
+    <div class="row">
+      <label>Alter in Tagen<input type="number" id="nAge" min="0" value="0" inputmode="numeric"></label>
+      <label>Gefüttert vor (Std)<input type="number" id="nFed" min="0" inputmode="numeric" placeholder="unbekannt"></label>
+    </div>
+    <button class="btn" id="nGo" style="margin-top:12px">STARTER ANLEGEN</button>
+  </div>
+  <div id="petMain" hidden>
+  <div class="card petcard">
+    <div id="petArt"></div>
+    <p id="petSay" class="hz-say" aria-live="polite"></p>
+    <div id="petName" class="pname"></div>
+    <p id="petLvl" class="muted" style="margin:2px 0 6px"></p>
+    <div class="xp"><i id="petXp"></i></div>
+    <p id="petMood" class="muted"></p>
+    <button class="btn" id="petFeed">HABE GEFÜTTERT</button>
+    <p class="muted" style="margin-bottom:0">Tippe hier, nachdem du deinen echten Starter gefüttert hast. Mit regelmäßigem Füttern und gebackenen Broten steigt er im Level und bekommt neues Zubehör.</p>
+  </div>
+  <div class="card">
+    <h2>ANPASSEN</h2>
+    <label>Name<input id="petIn" maxlength="16" placeholder="Wie heißt dein Starter?" autocomplete="off"></label>
+    <p class="lbl">Farbe</p><div class="chips" id="pCol"></div>
+    <p class="lbl">Augen</p><div class="chips" id="pEye"></div>
+    <p class="lbl">Zubehör</p><div class="chips" id="pAcc"></div>
+    <div class="row">
+      <label>Alter in Tagen<input type="number" id="pAge" min="0" inputmode="numeric"></label>
+      <label>Gefüttert vor (Std)<input type="number" id="pFedH" min="0" inputmode="numeric" placeholder="unbekannt"></label>
+    </div>
+    <button class="btn ghost" id="petDel" style="margin-top:14px">STARTER LÖSCHEN</button>
+  </div>
+  <div class="card" data-min="fort">
+    <h2>PEAK-TAGEBUCH</h2>
+    <p class="muted" style="margin-top:0">Trag ein, wann du fütterst und wann dein Starter am höchsten steht. Daraus merkt sich LilDough, wie schnell er ist, und plant damit.</p>
+    <div class="row">
+      <label>Verhältnis beim Füttern<select id="feedRatio"></select></label>
+      <label><span class="tempLbl">Raumtemperatur (°C)</span><input type="number" class="tempIn" inputmode="numeric"></label>
+    </div>
+    <button class="btn" id="petPeak" style="margin-top:12px">PEAK ERREICHT</button>
+    <p class="muted" id="peakInfo"></p>
+    <div id="peakList" class="ingr"></div>
+    <button class="btn ghost" id="peakUndo">LETZTEN EINTRAG LÖSCHEN</button>
+  </div>
+  </div>
+  <div class="card">
+    <h2>FÜTTERN-GUIDE</h2>    <div class="row">
+      <label>Verhältnis<select id="gRatio"></select></label>
+      <label>Anstellgut (g)<input type="number" id="gAsg" value="20" min="1" inputmode="decimal"></label>
+    </div>
+    <div id="gRes" class="ingr"></div>
+    <p id="gTip" class="muted"></p>
+    <p class="muted" id="gNote"></p>
+  </div>
+</section>
+
+<section id="tab-ck" class="tab">
+  <button type="button" class="back" data-go="more"><svg class="ic"><use href="#i-back"/></svg>MEHR</button>
+  <div class="card">
+    <h2>MEINE REZEPTE</h2>
+    <p class="muted" style="margin-top:0" id="ckHint"></p>
+    <div class="row">
+      <input id="ckUrl" placeholder="Rezept-Link(s) einfügen" autocomplete="off">
+      <button class="btn ghost sq" id="ckPaste" aria-label="Aus Zwischenablage einfügen"><svg class="ic"><use href="#i-clip"/></svg></button>
+      <button class="btn sq" id="ckAdd" aria-label="Rezept hinzufügen"><svg class="ic"><use href="#i-plus"/></svg></button>
+    </div>
+    <div class="chips" id="ckFolders" style="margin:14px 0 8px"></div>
+    <div class="row" id="ckFolderTools" hidden style="margin-bottom:10px">
+      <button class="btn ghost" id="ckRen">UMBENENNEN</button><button class="btn ghost" id="ckDelF">ORDNER LÖSCHEN</button>
+    </div>
+    <div id="ckList" class="rlist"></div>
+  </div>
+</section>
+
+<section id="tab-set" class="tab">
+  <button type="button" class="back" data-go="more"><svg class="ic"><use href="#i-back"/></svg>MEHR</button>
+  <div class="card">
+    <h2>ERFAHRUNG</h2>
+    <p class="muted" style="margin-top:0">Dein Niveau kannst du hier jederzeit ändern. Es bestimmt, welche Begriffe und Einstellungen du siehst. Alles, was du in den Optionen einstellst, wirkt sofort auf die ganze App.</p>
+    <div class="seg" id="lvSeg">
+      <button type="button" data-lv="neu">Neuling</button>
+      <button type="button" data-lv="fort">Fortgeschritten</button>
+      <button type="button" data-lv="pro">Profi</button>
+    </div>
+    <p class="muted" id="lvInfo" style="margin-bottom:0"></p>
+  </div>
+  <div class="card">
+    <h2>TUTORIAL</h2>
+    <p class="muted" style="margin-top:0">Hefe Hanz zeigt dir die App, als kurze Tour oder als Video mit allen Funktionen.</p>
+    <div class="row"><button class="btn ghost" id="tutAgain" type="button">KURZE TOUR</button><button class="btn" id="vidOpen" type="button">VIDEO ANSEHEN</button></div>
+  </div>
+  <div class="card">
+    <h2>SPRACHE</h2>
+    <div class="seg" id="langSeg">
+      <button type="button" data-l="de">Deutsch</button>
+      <button type="button" data-l="en">English</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>DARSTELLUNG</h2>
+    <div class="seg" id="themeSeg">
+      <button type="button" data-th="auto">Automatisch</button>
+      <button type="button" data-th="light">Hell</button>
+      <button type="button" data-th="dark">Dunkel</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>ANZEIGE</h2>
+    <p class="lbl">Schriftgröße</p>
+    <div class="seg" id="bigSeg">
+      <button type="button" data-b="0">Normal</button>
+      <button type="button" data-b="1">Groß</button>
+    </div>
+    <p class="lbl" style="margin-top:14px">Einheiten</p>
+    <div class="seg" id="unitSeg">
+      <button type="button" data-u="metric">Metrisch (g, °C)</button>
+      <button type="button" data-u="us">US (oz, °F)</button>
+    </div>
+  </div>
+  <div class="card" data-min="pro">
+    <h2>GÄRFORMEL</h2>
+    <label><span id="qLbl">Gärung verdoppelt ihr Tempo alle (°C)</span><input type="number" id="qTen" min="5" max="12" step="0.5" inputmode="decimal"></label>
+    <p class="muted" style="margin-bottom:0">Standard sind 8 °C (etwa 14 °F). Kleiner heißt: dein Teig reagiert stärker auf Temperatur. Der Bezugswert für Rezepte bleibt 22 °C.</p>
+  </div>
+  <div class="card">
+    <h2>BENACHRICHTIGUNGEN</h2>
+    <p class="muted" data-notif style="margin-top:0"></p>
+    <div class="row"><button class="btn" id="notifBtn2">AKTIVIEREN</button></div>
+  </div>
+  <div class="card">
+    <h2>BROT-COACH</h2>
+    <p class="muted" id="coachMode" style="margin-top:0"></p>
+    <button class="btn ghost" id="goKey">API-KEY ÄNDERN</button>
+  </div>
+  <div class="card">
+    <h2>MEINE DATEN</h2>
+    <p class="muted" style="margin-top:0">Alles liegt nur auf diesem Gerät. Mit Exportieren sicherst du es als Datei.</p>
+    <div class="row"><button class="btn ghost" id="dataExp">EXPORTIEREN</button><button class="btn ghost" id="dataImp">IMPORTIEREN</button></div>
+    <input type="file" id="dataFile" accept="application/json,.json" hidden>
+    <button class="btn stop" id="dataDel" style="margin-top:10px">ALLES LÖSCHEN</button>
+  </div>
+  <div class="card">
+    <details class="legalbox"><summary>HILFE BEI PROBLEMEN</summary>
+      <div class="legal" id="helpBox"></div>
+    </details>
+  </div>
+  <div class="card">
+    <details class="legalbox"><summary>BEGRIFFE ERKLÄRT</summary>
+      <div class="legal" id="gloss"></div>
+    </details>
+  </div>
+  <div class="card">
+    <details class="legalbox"><summary>DATENSCHUTZ</summary>
+      <div class="legal" id="legal"></div>
+    </details>
+    <div class="legal" id="impr"></div>
+    <p class="muted" style="margin:12px 0 0" id="ver">LilDough</p>
+  </div>
+</section>
+
+</main>
+<nav>
+  <span id="navInd"></span>
+  <button data-tab="bake" class="on"><svg class="ic"><use href="#i-bread"/></svg>BACKEN</button>
+  <button data-tab="calc"><svg class="ic"><use href="#i-calc"/></svg>RECHNER</button>
+  <button data-tab="more"><svg class="ic"><use href="#i-more"/></svg>MEHR</button>
+</nav>
+<div id="onb" class="onb" role="dialog" aria-modal="true" aria-labelledby="onbT" hidden>
+  <div class="onbc">
+    <div class="seg" id="onbLang"><button type="button" data-l="de">Deutsch</button><button type="button" data-l="en">English</button></div>
+    <h2 id="onbT">Wie gut kennst du dich mit Sauerteig aus?</h2>
+    <p class="muted">Danach richten sich Begriffe und Einstellungen. Du kannst das später in den Optionen ändern.</p>
+    <button type="button" class="lv" data-lv="neu"><b>Neuling</b><span>Ich fange gerade an. Bitte einfache Wörter und wenige Einstellungen.</span></button>
+    <button type="button" class="lv" data-lv="fort"><b>Fortgeschritten</b><span>Ich habe schon ein paar Brote gebacken und kenne die Grundbegriffe.</span></button>
+    <button type="button" class="lv" data-lv="pro"><b>Profi</b><span>Ich kenne die Fachbegriffe und will volle Kontrolle, auch Bäckerprozente.</span></button>
+  </div>
+</div>
+<div id="tut" class="onb" role="dialog" aria-modal="true" aria-labelledby="tutT" hidden>
+  <div class="onbc tutc">
+    <div id="tutHz" class="tuthz"></div>
+    <p id="tutT" class="bubble" aria-live="polite"></p>
+    <div id="tutDots" class="dots"></div>
+    <div class="row"><button class="btn ghost" id="tutSkip" type="button">ÜBERSPRINGEN</button><button class="btn" id="tutNext" type="button">WEITER</button></div>
+  </div>
+</div>
+<div id="vid" class="onb" role="dialog" aria-modal="true" aria-label="Video-Tutorial" hidden>
+  <div class="onbc vidc">
+    <div class="vstage"><img id="vImg" alt=""><div id="vHz" class="vhz"></div></div>
+    <p id="vSub" class="vsub" aria-live="polite"></p>
+    <div class="vbar"><i id="vProg"></i></div>
+    <div class="row">
+      <button class="btn ghost sq" id="vPrev" type="button" aria-label="Zurück"><svg class="ic"><use href="#i-back"/></svg></button>
+      <button class="btn" id="vPlay" type="button">ABSPIELEN</button>
+      <button class="btn ghost sq" id="vNext" type="button" aria-label="Weiter"><svg class="ic flip"><use href="#i-back"/></svg></button>
+      <button class="btn ghost sq" id="vClose" type="button" aria-label="Schließen"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+  </div>
+</div>
+<script src="i18n.js?v=30"></script>
+<script src="extra-breads.js?v=30"></script>
+<script src="hanz.js?v=30"></script>
+<script src="app.js?v=30"></script>
+</body>
+</html>
