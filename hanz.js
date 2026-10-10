@@ -58,15 +58,27 @@ const TUT=['Hallo, ich bin Hefe Hanz. Ich zeige dir kurz, wie LilDough funktioni
   'Dein Niveau kannst du in den Optionen jederzeit ändern. Es bestimmt, welche Begriffe und Einstellungen du siehst. Alles dort wirkt sofort auf die ganze App.'];
 let tutI=0,tutTalk;
 function hzTalkFor(el,ms){const s=el.querySelector('.hz');if(!s)return;s.classList.add('talk');clearTimeout(tutTalk);tutTalk=setTimeout(()=>s.classList.remove('talk'),ms)}
+let tutTok=0;
+// Hanz spricht die Folie: Aufnahme tut/t-de-1.mp3 usw., sonst bewegt er den Mund im Takt
+async function tutSpeak(t){
+  const tok=++tutTok,box=document.getElementById('tutHz'),s=box.querySelector('.hz'),f=`tut/t-${LANG}-${tutI+1}.mp3`;
+  aStop();
+  if(await aProbe(f)){
+    await V.unlockP;await vWire();if(tok!==tutTok)return;
+    V.audio.src=f;V.audio.onended=()=>{if(tok===tutTok)hzMouth(s,false)};
+    try{await V.audio.play();if(tok!==tutTok)return;hzMouth(s,true,!!V.an);if(V.an)vLip(s);return}catch{}
+  }
+  if(tok===tutTok)hzTalkFor(box,Math.min(4500,t.split(' ').length*260));
+}
 function tutShow(){
   const t=tr(TUT[tutI]);document.getElementById('tutT').textContent=t;
   document.getElementById('tutDots').innerHTML=TUT.map((_,i)=>`<i class="${i===tutI?'on':''}"></i>`).join('');
   document.getElementById('tutNext').textContent=tutI===TUT.length-1?tr('LOS GEHT’S'):tr('WEITER');
-  hzTalkFor(document.getElementById('tutHz'),Math.min(4500,t.split(' ').length*260));
+  tutSpeak(t);
 }
-function openTut(){tutI=0;document.getElementById('tutHz').innerHTML=hanzSVG({label:'Hefe Hanz'});document.getElementById('tut').hidden=false;tutShow()}
-function closeTut(){document.getElementById('tut').hidden=true;LS.set('sb_tut',1);if(typeof goTab==='function')goTab('bake')}
-document.getElementById('tutNext').onclick=()=>{if(tutI<TUT.length-1){tutI++;tutShow()}else closeTut()};
+function openTut(){tutI=0;document.getElementById('tutHz').innerHTML=hanzSVG({label:'Hefe Hanz'});document.getElementById('tut').hidden=false;vUnlock(`tut/t-${LANG}-1.mp3`);tutShow()}
+function closeTut(){tutTok++;aStop();document.getElementById('tut').hidden=true;LS.set('sb_tut',1);if(typeof goTab==='function')goTab('bake')}
+document.getElementById('tutNext').onclick=()=>{vUnlock();if(tutI<TUT.length-1){tutI++;tutShow()}else closeTut()};
 document.getElementById('tutSkip').onclick=closeTut;
 
 /* ---------- Video-Tutorial ----------
@@ -82,7 +94,7 @@ const VSC=[
   'Und hier wohne ich! Du kannst mich füttern, anziehen und beim Wachsen zusehen. Mit dem Peak-Tagebuch lerne ich, wie schnell dein Starter wirklich ist.',
   'Nach dem Backen hältst du Foto, Sterne und Notizen im Back-Tagebuch fest. So wird jedes Brot ein bisschen besser.',
   'In den Optionen stellst du dein Niveau ein, also Neuling, Fortgeschritten oder Profi. Das ändert Begriffe und Einstellungen in der ganzen App. Viel Spaß beim Backen!'];
-const V={i:0,playing:false,timer:0,audio:null,ctx:null,an:null,hasAudio:null,raf:0};
+const V={i:0,playing:false,timer:0,audio:null,ctx:null,an:null,raf:0};
 const vEl=id=>document.getElementById(id);
 let vPre=[];
 function vShow(){
@@ -91,22 +103,22 @@ function vShow(){
   vEl('vProg').style.width=((V.i+1)/VSC.length*100)+'%';
   vEl('vPlay').textContent=V.playing?tr('PAUSE'):(V.i===VSC.length-1&&V.done?tr('NOCHMAL'):tr('ABSPIELEN'));
 }
-function vMouth(on,sync){const s=vEl('vHz').querySelector('.hz');if(!s)return;s.classList.toggle('talk',on&&!sync);s.classList.toggle('sync',on&&!!sync);if(!on)s.style.removeProperty('--mo')}
-function vStop(){V.playing=false;clearTimeout(V.timer);cancelAnimationFrame(V.raf);if(V.audio){V.audio.onended=null;V.audio.pause()}vMouth(false);vShow()}
-async function vProbe(){
-  if(V.hasAudio!==null)return V.hasAudio;
-  try{const r=await fetch(`tut/${LANG}-1.mp3`,{method:'HEAD',cache:'no-store'});V.hasAudio=r.ok}catch{V.hasAudio=false}
-  return V.hasAudio;
-}
-function vLip(){ // Mund folgt der Lautstärke der Aufnahme
-  const s=vEl('vHz').querySelector('.hz'),buf=new Uint8Array(V.an.fftSize);
+function hzMouth(s,on,sync){if(!s)return;s.classList.toggle('talk',!!on&&!sync);s.classList.toggle('sync',!!on&&!!sync);if(!on)s.style.removeProperty('--mo')}
+function vMouth(on,sync){hzMouth(vEl('vHz').querySelector('.hz'),on,sync)}
+function aStop(){cancelAnimationFrame(V.raf);if(V.audio){V.audio.onended=null;V.audio.pause()}}
+function vStop(){V.playing=false;clearTimeout(V.timer);aStop();vMouth(false);vShow()}
+const AP={}; // gibt es die Aufnahme? (einmal pro Datei prüfen)
+async function aProbe(f){if(!(f in AP)){try{AP[f]=(await fetch(f,{method:'HEAD',cache:'no-store'})).ok}catch{AP[f]=false}}return AP[f]}
+const vProbe=()=>aProbe(`tut/${LANG}-1.mp3`);
+function vLip(s){ // Mund folgt der Lautstärke der Aufnahme
+  s=s||vEl('vHz').querySelector('.hz');const buf=new Uint8Array(V.an.fftSize);
   const tick=()=>{V.an.getByteTimeDomainData(buf);let q=0;for(const b of buf){const d=(b-128)/128;q+=d*d}
     s.style.setProperty('--mo',Math.min(1,Math.sqrt(q/buf.length)*7).toFixed(2));V.raf=requestAnimationFrame(tick)};
   tick();
 }
 // Muss direkt im Tipp-Ereignis laufen, sonst bleibt der Ton auf dem iPhone gesperrt
-function vUnlock(){
-  if(!V.audio){V.audio=new Audio();V.audio.preload='auto';V.audio.src=`tut/${LANG}-${V.i+1}.mp3`;V.unlockP=V.audio.play().then(()=>V.audio.pause()).catch(()=>{})}
+function vUnlock(f){
+  if(!V.audio){V.audio=new Audio();V.audio.preload='auto';V.audio.src=f||`tut/${LANG}-${V.i+1}.mp3`;V.unlockP=V.audio.play().then(()=>V.audio.pause()).catch(()=>{})}
   if(!V.ctx){try{V.ctx=new (window.AudioContext||window.webkitAudioContext)()}catch{V.noAn=true}}
   try{V.ctx?.resume()}catch{}
 }
