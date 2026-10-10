@@ -3,7 +3,7 @@ const SB_URL='https://rsirxtxeiolsaultreuz.supabase.co';
 const SB_KEY='sb_publishable_VYVOJ--pfOlhIES2swipGg_E33b0185';
 const CONTACT=''; // Kontakt für die Datenschutzerklärung, z. B. 'name@example.com' (leer = Zeile wird nicht angezeigt)
 const IMPRESSUM={name:'',addr:'',mail:CONTACT}; // Pflichtangaben nach § 5 DDG, vor dem Launch ausfüllen (Name, Straße, PLZ Ort)
-const BUILD='30';
+const BUILD='31';
 const $=id=>document.getElementById(id);
 const LS={get:(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
 const ICON=n=>`<svg class="ic"><use href="#i-${n}"/></svg>`;
