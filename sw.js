@@ -1,4 +1,4 @@
-const C='sauerteig-v31',F=['./','index.html','styles.css','app.js','i18n.js','extra-breads.js','hanz.js','manifest.webmanifest','icon.svg','icon-192.png','icon-512.png','apple-touch-icon.png'];
+const C='sauerteig-v33',F=['./','index.html','styles.css','app.js','i18n.js','extra-breads.js','hanz.js','voice.js','manifest.webmanifest','icon.svg','icon-192.png','icon-512.png','badge-96.png','apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));self.clients.claim()});
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(u.origin!==location.origin||e.request.method!=='GET')return;
@@ -7,6 +7,6 @@ self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil
 self.addEventListener('push',e=>{let d={};try{d=e.data.json()}catch{}
 e.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(l=>{
 if(l.some(c=>c.visibilityState==='visible'))return; // App offen: sie meldet sich selbst
-return self.registration.showNotification(d.title||'Sauerteig',{body:d.body||'',icon:'icon-192.png',badge:'icon-192.png',tag:'step',renotify:true,requireInteraction:true,vibrate:[300,150,300,150,300]})}))});
+return self.registration.showNotification(d.title||'LilDough',{body:d.body||'',icon:new URL('icon-192.png',self.registration.scope).href,badge:new URL('badge-96.png',self.registration.scope).href,tag:'step',renotify:true,requireInteraction:true,vibrate:[300,150,300,150,300]})}))});
 
 
