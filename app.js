@@ -3,7 +3,7 @@ const SB_URL='https://rsirxtxeiolsaultreuz.supabase.co';
 const SB_KEY='sb_publishable_VYVOJ--pfOlhIES2swipGg_E33b0185';
 const CONTACT=''; // Kontakt für die Datenschutzerklärung, z. B. 'name@example.com' (leer = Zeile wird nicht angezeigt)
 const IMPRESSUM={name:'',addr:'',mail:CONTACT}; // Pflichtangaben nach § 5 DDG, vor dem Launch ausfüllen (Name, Straße, PLZ Ort)
-const BUILD='31';
+const BUILD='33';
 const $=id=>document.getElementById(id);
 const LS={get:(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
 const ICON=n=>`<svg class="ic"><use href="#i-${n}"/></svg>`;
@@ -418,7 +418,7 @@ function notifState(){
 function notify(title,body){
   toast(`${title}: ${body}`);navigator.vibrate&&navigator.vibrate([300,150,300,150,300]);beep();
   if('Notification' in window&&Notification.permission==='granted'){
-    const o={body,icon:'icon-192.png',badge:'icon-192.png',tag:'step',renotify:true,requireInteraction:true,vibrate:[300,150,300,150,300]};
+    const o={body,icon:'icon-192.png',badge:'badge-96.png',tag:'step',renotify:true,requireInteraction:true,vibrate:[300,150,300,150,300]};
     navigator.serviceWorker?.ready.then(r=>r.showNotification(title,o)).catch(()=>{try{new Notification(title,o)}catch{}});
   }
 }
@@ -476,17 +476,32 @@ function drawCk(){
   const real=ckFilter!=='all'&&ckFilter!=='none';$('ckFolderTools').hidden=!real;
   const opts=sel=>`<option value="">${esc(tr('Ohne Ordner'))}</option>`+ck.folders.map(f=>`<option value="${esc(f.id)}"${sel===f.id?' selected':''}>${esc(f.name)}</option>`).join('');
   const rows=ck.recipes.map((r,i)=>[r,i]).filter(([r])=>ckFilter==='all'||(ckFilter==='none'?!r.f:r.f===ckFilter));
-  const panel=(r,i)=>ckOpen!==i?'':`<div class="rn"><label>${esc(tr('Zutaten (eine pro Zeile)'))}<textarea data-ni="${i}" rows="4">${esc(r.notes.ing)}</textarea></label><label>${esc(tr('Schritte (eine pro Zeile, Zeiten wie „30 Min“ werden erkannt)'))}<textarea data-ns="${i}" rows="6">${esc(r.notes.steps)}</textarea></label><button class="btn" data-go="${i}">${ICON('play')} ${esc(tr('PLAN AUS NOTIZEN'))}</button></div>`;
-  $('ckList').innerHTML=rows.length?rows.map(([r,i])=>`<div class="rec"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a><div class="ra"><select data-mv="${i}" aria-label="${esc(tr('Ordner'))}">${opts(r.f)}</select><button class="go${ckOpen===i?' on':''}" data-note="${i}">${ICON('note')} ${esc(tr('NOTIZEN'))}</button><button data-del="${i}" aria-label="${esc(tr('Entfernen'))}">${ICON('trash')}</button></div>${panel(r,i)}</div>`).join('')
+  const panel=(r,i)=>ckOpen!==i?'':`<div class="rn">${r.own?`<label>${esc(tr('Name'))}<input data-nt="${i}" maxlength="80" value="${esc(r.title)}" autocomplete="off"></label>`:''}<p class="lbl">${esc(tr('Foto'))}</p><div class="row" style="margin-bottom:12px"><button class="btn ghost ib" data-cam="${i}">${ICON('cam')} ${esc(tr('KAMERA'))}</button><button class="btn ghost ib" data-gal="${i}">${ICON('image')} ${esc(tr('GALERIE'))}</button></div><label>${esc(tr('Zutaten (eine pro Zeile)'))}<span class="micwrap"><textarea data-ni="${i}" rows="4">${esc(r.notes.ing)}</textarea><button type="button" class="mic" data-mic aria-label="${esc(tr('Diktieren'))}">${ICON('mic')}</button></span></label><label>${esc(tr('Schritte (eine pro Zeile, Zeiten wie „30 Min“ werden erkannt)'))}<span class="micwrap"><textarea data-ns="${i}" rows="6">${esc(r.notes.steps)}</textarea><button type="button" class="mic" data-mic aria-label="${esc(tr('Diktieren'))}">${ICON('mic')}</button></span></label><button class="btn" data-go="${i}">${ICON('play')} ${esc(tr('PLAN AUS NOTIZEN'))}</button></div>`;
+  $('ckList').innerHTML=rows.length?rows.map(([r,i])=>`<div class="rec"><div class="rh">${r.photo?`<img class="rthumb" alt="" data-rph="${esc(r.photo)}">`:''}<div class="rhb">${r.own?`<b class="rt">${esc(r.title)}</b>`:`<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>`}<div class="rs">${[1,2,3,4,5].map(n=>`<button type="button" data-rate="${i}" data-n="${n}" aria-label="${esc(tr('{0} Sterne',n))}">${star((r.rating||0)>=n)}</button>`).join('')}</div></div></div><div class="ra"><select data-mv="${i}" aria-label="${esc(tr('Ordner'))}">${opts(r.f)}</select><button class="go${ckOpen===i?' on':''}" data-note="${i}">${ICON('note')} ${esc(tr('NOTIZEN'))}</button><button data-del="${i}" aria-label="${esc(tr('Entfernen'))}">${ICON('trash')}</button></div>${panel(r,i)}</div>`).join('')
     :`<p class="muted" style="margin:6px 0 0">${esc(ck.recipes.length?tr('In diesem Ordner ist noch nichts.'):tr('Noch keine Rezepte. Teile eines mit dieser App oder füge einen Link ein.'))}</p>`;
   const L=$('ckList');
   L.querySelectorAll('[data-mv]').forEach(s=>s.onchange=()=>{ck.recipes[+s.dataset.mv].f=s.value||null;saveCk();drawCk()});
-  L.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ck.recipes.splice(+b.dataset.del,1);ckOpen=-1;saveCk();syncCkBreads();drawCk();fillSelects()});
+  L.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const rr=ck.recipes[+b.dataset.del];if(rr&&rr.own&&!confirm(tr('„{0}“ wirklich löschen?',rr.title)))return;if(rr&&rr.photo)photoDel(rr.photo).catch(()=>{});ck.recipes.splice(+b.dataset.del,1);ckOpen=-1;saveCk();syncCkBreads();drawCk();fillSelects()});
   L.querySelectorAll('[data-note]').forEach(b=>b.onclick=()=>{ckOpen=ckOpen===+b.dataset.note?-1:+b.dataset.note;drawCk()});
   L.querySelectorAll('[data-ni]').forEach(t=>t.onchange=()=>{ck.recipes[+t.dataset.ni].notes.ing=t.value;saveCk();syncCkBreads()});
   L.querySelectorAll('[data-ns]').forEach(t=>t.onchange=()=>{ck.recipes[+t.dataset.ns].notes.steps=t.value;saveCk();syncCkBreads()});
   L.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>startRecipe(+b.dataset.go));
+  L.querySelectorAll('[data-rate]').forEach(b=>b.onclick=()=>{const r=ck.recipes[+b.dataset.rate],n=+b.dataset.n;r.rating=(r.rating||0)===n?0:n;saveCk();drawCk()});
+  L.querySelectorAll('[data-nt]').forEach(x=>x.onchange=()=>{const r=ck.recipes[+x.dataset.nt];r.title=x.value.trim().slice(0,80)||r.title;saveCk();syncCkBreads();drawCk();fillSelects()});
+  L.querySelectorAll('[data-cam]').forEach(b=>b.onclick=()=>{rPhotoFor=+b.dataset.cam;$('rCam').click()});
+  L.querySelectorAll('[data-gal]').forEach(b=>b.onclick=()=>{rPhotoFor=+b.dataset.gal;$('rPhoto').click()});
+  L.querySelectorAll('img[data-rph]').forEach(async im=>{try{im.src=await photoGet(im.dataset.rph)}catch{}});
 }
+// Eigene Rezepte (ohne Link) und Fotos zu jedem Rezept; Fotos liegen wie im Tagebuch in IndexedDB
+let rPhotoFor=-1;
+$('rPhoto').onchange=$('rCam').onchange=async e=>{const f=e.target.files[0];e.target.value='';const r=ck.recipes[rPhotoFor];if(!f||!r)return;
+  try{const d=await shrink(f,900,.72),k=r.photo||('r'+Date.now().toString(36));await photoPut(k,d);r.photo=k;saveCk();drawCk();toast(tr('Foto gespeichert.'))}catch{toast(tr('Das Foto konnte nicht gespeichert werden.'))}};
+$('ckOwn').onclick=()=>{
+  if(ck.recipes.length>=50)return toast(tr('Es passen höchstens 50 Rezepte in die Liste.'));
+  const n=(prompt(tr('Wie heißt dein Rezept?'))||'').trim().slice(0,80);if(!n)return;
+  ck.recipes.unshift({url:'own:'+Date.now().toString(36),title:n,own:true,rating:0,f:ckFilter!=='all'&&ckFilter!=='none'?ckFilter:null,notes:{ing:'',steps:''}});
+  ckOpen=0;saveCk();drawCk();toast(tr('Rezept angelegt. Trag Zutaten und Schritte ein.'));
+};
 $('ckRen').onclick=()=>{const f=ck.folders.find(x=>x.id===ckFilter);if(!f)return;const n=(prompt(tr('Neuer Name'),f.name)||'').trim().slice(0,24);if(n){f.name=n;saveCk();drawCk()}};
 $('ckDelF').onclick=()=>{const f=ck.folders.find(x=>x.id===ckFilter);if(!f||!confirm(tr('Ordner „{0}“ löschen? Die Rezepte bleiben erhalten.',f.name)))return;
   ck.recipes.forEach(r=>{if(r.f===f.id)r.f=null});ck.folders=ck.folders.filter(x=>x!==f);ckFilter='all';saveCk();drawCk()};
@@ -559,6 +574,7 @@ function drawChat(){
     if(m.p){const i=new Image();i.src=m.p;d.appendChild(i)}
     else if(m.img){const s=document.createElement('div');s.className='muted';s.innerHTML=ICON('image')+' '+esc(tr('Foto'));d.appendChild(s)}
     if(m.t){const s=document.createElement('span');s.textContent=m.t;d.appendChild(s)}
+    if(m.r==='a'&&m.t&&m.t!=='…'&&!m.e&&window.speechSynthesis){const b=document.createElement('button');b.className='say';b.type='button';b.setAttribute('aria-label',tr('Vorlesen'));b.innerHTML=ICON('speak');b.onclick=()=>speak(m.t);d.appendChild(b)}
     log.appendChild(d);
   });
   log.scrollTop=1e9;coachChips();
@@ -645,6 +661,7 @@ async function askCoach(sys,hist){
     else{last.t=e.friendly?e.message:tr('Fehler: {0}',e.message);last.e=1}
   }
   chat=chat.slice(-30);LS.set('sb_chat',chat.map(({p,...m})=>m));drawChat();$('chatSend').disabled=false;
+  if(LS.get('sb_tts',false)&&!last.e&&last.t&&typeof speak==='function')speak(last.t);
 }
 $('chatSend').onclick=send;$('chatIn').addEventListener('keydown',e=>e.key==='Enter'&&send());
 
@@ -731,7 +748,7 @@ $('petIn').addEventListener('change',drawPet);
 setInterval(()=>{if(!document.hidden&&$('tab-pet').classList.contains('active')&&document.activeElement!==$('petIn'))drawPet()},60000);
 
 /* ---------- Back-Tagebuch: Ergebnis, Foto und Notiz je Brot; Fotos liegen in IndexedDB ---------- */
-let jr=LS.get('sb_journal',[]),jRating=0,jPhotoData=null,jDraft=LS.get('sb_jdraft',null);
+let jr=LS.get('sb_journal',[]),jRating=0,jPhotoData=null,jEdit=null,jDraft=LS.get('sb_jdraft',null);
 const idb=()=>new Promise((ok,no)=>{const r=indexedDB.open('lildough',1);r.onupgradeneeded=()=>r.result.createObjectStore('photos');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
 const idbDo=async(mode,fn)=>{const d=await idb();return new Promise((ok,no)=>{const t=d.transaction('photos',mode),q=fn(t.objectStore('photos'));t.oncomplete=()=>{d.close();ok(q&&q.result)};t.onerror=()=>no(t.error)})};
 const photoPut=(id,v)=>idbDo('readwrite',s=>s.put(v,id)),photoGet=id=>idbDo('readonly',s=>s.get(id)),photoDel=id=>idbDo('readwrite',s=>s.delete(id));
@@ -751,31 +768,33 @@ async function drawJournal(){
   $('jNew').hidden=!$('jForm').hidden;
   $('jStars').innerHTML=[1,2,3,4,5].map(n=>`<button type="button" data-n="${n}" class="${jRating>=n?'on':''}" aria-label="${esc(tr('{0} Sterne',n))}">${star(true)}</button>`).join('');
   $('jStars').querySelectorAll('button').forEach(b=>b.onclick=()=>{jRating=jRating===+b.dataset.n?0:+b.dataset.n;drawJournal()});
-  $('jList').innerHTML=jr.length?jr.map(e=>`<div class="jitem" data-id="${e.id}">${e.photo?`<img alt="" data-ph="${e.id}">`:''}<div class="jb"><div class="jt">${esc(td(e.bread))}</div><div class="js">${[1,2,3,4,5].map(n=>star(e.rating>=n)).join('')}</div>${e.note?`<div class="jn">${esc(e.note)}</div>`:''}<div class="jm">${new Date(e.at).toLocaleDateString(LOCALE(),{day:'numeric',month:'short',year:'numeric'})}${e.temp?' · '+tStr(e.temp):''}${e.hours?' · '+String(e.hours).replace('.',LANG==='de'?',':'.')+' '+esc(tr('Std')):''}</div><div class="ja">${e.photo?`<button data-ask="${e.id}">${ICON('chat')} ${esc(tr('COACH FRAGEN'))}</button>`:''}<button data-del="${e.id}" aria-label="${esc(tr('Entfernen'))}">${ICON('trash')}</button></div></div></div>`).join('')
+  $('jList').innerHTML=jr.length?jr.map(e=>`<div class="jitem" data-id="${e.id}">${e.photo?`<img alt="" data-ph="${e.id}">`:''}<div class="jb"><div class="jt">${esc(td(e.bread))}</div><div class="js">${[1,2,3,4,5].map(n=>star(e.rating>=n)).join('')}</div>${e.note?`<div class="jn">${esc(e.note)}</div>`:''}<div class="jm">${new Date(e.at).toLocaleDateString(LOCALE(),{day:'numeric',month:'short',year:'numeric'})}${e.temp?' · '+tStr(e.temp):''}${e.hours?' · '+String(e.hours).replace('.',LANG==='de'?',':'.')+' '+esc(tr('Std')):''}</div><div class="ja"><button data-edit="${e.id}">${ICON('note')} ${esc(tr('BEARBEITEN'))}</button>${e.photo?`<button data-ask="${e.id}">${ICON('chat')} ${esc(tr('COACH FRAGEN'))}</button>`:''}<button data-del="${e.id}" aria-label="${esc(tr('Entfernen'))}">${ICON('trash')}</button></div></div></div>`).join('')
     :`<p class="muted" style="margin:8px 0 0">${esc(tr('Noch keine Einträge.'))}</p>`;
   $('jList').querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{
     if(!confirm(tr('Diesen Eintrag löschen?')))return;const id=b.dataset.del;jr=jr.filter(e=>e.id!==id);LS.set('sb_journal',jr);try{await photoDel(id)}catch{}drawJournal()});
+  $('jList').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openJournal(null,jr.find(x=>x.id===b.dataset.edit)));
   $('jList').querySelectorAll('[data-ask]').forEach(b=>b.onclick=async()=>{
     const e=jr.find(x=>x.id===b.dataset.ask);try{const p=await photoGet(e.id);setPend(await shrink(p));$('chatIn').value=tr('Bewerte bitte die Krume und Kruste meines Brotes ({0}) und gib mir einen Tipp.',td(e.bread));goTab('chat')}catch{toast(tr('Das Bild konnte nicht gelesen werden.'))}});
   // Vorschaubilder erst nach dem Zeichnen aus IndexedDB laden
   $('jList').querySelectorAll('img[data-ph]').forEach(async im=>{try{im.src=await photoGet(im.dataset.ph)}catch{}});
 }
-function openJournal(d){
-  jRating=0;jPhotoData=null;$('jPrev').hidden=true;$('jNote').value='';
+function openJournal(d,ed){
+  jEdit=ed||null;jRating=ed?ed.rating||0:0;jPhotoData=null;$('jPrev').hidden=true;$('jNote').value=ed?ed.note||'':'';if(ed){d=ed;if(ed.photo)photoGet(ed.id).then(s=>{if(s&&jEdit===ed){$('jPrev').src=s;$('jPrev').hidden=false}}).catch(()=>{})}
   $('jBread').value=d&&d.bread?td(d.bread):'';$('jTemp').value=tShow(d&&d.temp?d.temp:temp);$('jHours').value=d&&d.hours?d.hours:'';
   $('jForm').hidden=false;drawJournal();$('jForm').scrollIntoView({behavior:'smooth',block:'center'});
 }
 $('jNew').onclick=()=>openJournal(jDraft);
 $('jCancel').onclick=()=>{$('jForm').hidden=true;drawJournal()};
-$('jPhotoBtn').onclick=()=>$('jPhoto').click();
-$('jPhoto').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+$('jPhotoBtn').onclick=()=>$('jPhoto').click();$('jCamBtn').onclick=()=>$('jCam').click();
+$('jPhoto').onchange=$('jCam').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
   try{jPhotoData=await shrink(f,900,.72);$('jPrev').src=jPhotoData;$('jPrev').hidden=false}catch{toast(tr('Das Bild konnte nicht gelesen werden.'))}};
 $('jSave').onclick=async()=>{
   const name=$('jBread').value.trim();if(!name)return toast(tr('Bitte gib dem Brot einen Namen.'));
-  const e={id:'j'+Date.now().toString(36),at:Date.now(),bread:name,rating:jRating,temp:Math.round(tIn($('jTemp').value))||0,hours:Math.round((+$('jHours').value||0)*10)/10,note:$('jNote').value.trim().slice(0,400),photo:false};
+  const old=jEdit,e={id:old?old.id:'j'+Date.now().toString(36),at:old?old.at:Date.now(),bread:name,rating:jRating,temp:Math.round(tIn($('jTemp').value))||0,hours:Math.round((+$('jHours').value||0)*10)/10,note:$('jNote').value.trim().slice(0,600),photo:old?!!old.photo:false};
   let msg=tr('Eintrag gespeichert.');
   if(jPhotoData){try{await photoPut(e.id,jPhotoData);e.photo=true}catch{msg=tr('Das Foto konnte nicht gespeichert werden (Speicher voll oder privater Modus). Der Eintrag wurde ohne Foto gespeichert.')}}
-  jr=[e,...jr].slice(0,100);LS.set('sb_journal',jr);jDraft=null;LS.del('sb_jdraft');
+  if(old)jr=jr.map(x=>x.id===old.id?e:x);else{jr=[e,...jr].slice(0,100);jDraft=null;LS.del('sb_jdraft')}
+  LS.set('sb_journal',jr);jEdit=null;
   $('jForm').hidden=true;drawJournal();toast(msg);
 };
 
@@ -872,13 +891,15 @@ function settingsUI(){
   const L=[[tr('Was auf deinem Gerät gespeichert wird'),tr('Plan, Starter, Rezepte, Chat und Einstellungen bleiben in diesem Browser. Unter „Meine Daten“ kannst du alles exportieren oder löschen.')],
     [tr('Was an Server geht'),tr('Die Brotsorten kommen von unserem Server (Supabase, EU). Für Erinnerungen bei geschlossener App speichert der Server dein Push-Abo sowie Zeitpunkte und Texte der Erinnerungen, bis sie verschickt sind. Gegen Missbrauch wird deine IP-Adresse kurz für Zähler genutzt.')],
     [tr('Coach'),tr('Fragen und Fotos gehen über unseren Server an Google (Gemini). Der Server speichert nur eine zufällige Geräte-ID für das Tageslimit. Schick keine Fotos von Personen oder privaten Dingen.')],
-    [tr('Rezepte'),tr('Links, Ordner und Notizen bleiben auf deinem Gerät. Die App liest keine fremden Rezeptseiten aus.')]];
-  $('legal').innerHTML=L.map(([h,p])=>`<h3>${esc(h)}</h3><p>${esc(p)}</p>`).join('')+(CONTACT?`<h3>${esc(tr('Kontakt'))}</h3><p>${esc(CONTACT)}</p>`:'');
+    [tr('Rezepte'),tr('Links, Ordner und Notizen bleiben auf deinem Gerät. Die App liest keine fremden Rezeptseiten aus.')],
+    [tr('Diktieren und Vorlesen'),tr('Beim Diktieren nutzt die App die Spracherkennung deines Browsers. Je nach Gerät verarbeitet sie Google oder Apple. Vorlesen läuft über die Sprachausgabe deines Geräts.')]];
+  $('legal').innerHTML=L.map(([h,p])=>`<h3>${esc(h)}</h3><p>${esc(p)}</p>`).join('')+(CONTACT?`<h3>${esc(tr('Kontakt'))}</h3><p>${esc(CONTACT)}</p>`:'')+`<p><a href="datenschutz.html${LANG==='en'?'#en':''}" target="_blank" rel="noopener">${esc(tr('Vollständige Datenschutzerklärung und Impressum'))}</a></p>`;
   const I=IMPRESSUM;
   $('impr').innerHTML=(I.name||I.addr||I.mail)?`<h3>${esc(tr('Impressum'))}</h3><p>${[I.name,I.addr,I.mail].filter(Boolean).map(esc).join('<br>')}</p>`:'';
   $('ver').textContent='LilDough '+BUILD;
   const H=[[tr('Die App zeigt etwas Altes'),tr('Schließe die App ganz und öffne sie neu. Hilft das nicht, lösche in den Browser-Einstellungen die Website-Daten für diese Seite. Exportiere vorher deine Daten.')],
     [tr('Keine Erinnerungen bei geschlossener App'),tr('Aktiviere Benachrichtigungen unter „Optionen“. Auf dem iPhone geht das nur, wenn die App über „Zum Home-Bildschirm“ installiert ist.')],
+    [tr('Erinnerungen kommen zu spät'),tr('Unser Server schickt sie pünktlich, aber Akkusparen auf dem Handy kann sie aufhalten. Samsung: Einstellungen, Akku, Hintergrundnutzungslimits, „Nie schlafende Apps“ und dort Chrome und LilDough hinzufügen. Andere Android-Handys: in den App-Infos von Chrome unter Akku „Nicht eingeschränkt“ wählen.')],
     [tr('Der Coach antwortet nicht'),tr('Bei Überlastung probiert die App andere Modelle. Warte kurz und versuch es dann erneut.')],
     [tr('Meine Daten sind weg'),tr('Alles liegt nur auf deinem Gerät. Exportiere regelmäßig und lade die Datei mit „Importieren“ wieder ein.')]];
   $('helpBox').innerHTML=H.map(([h,p])=>`<h3>${esc(h)}</h3><p>${esc(p)}</p>`).join('');
