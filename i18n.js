@@ -334,3 +334,16 @@ Object.assign(EN,{
 'Fragen und Fotos gehen über unseren Server an Google (Gemini). Der Server speichert nur eine zufällige Geräte-ID für das Tageslimit. Schick keine Fotos von Personen oder privaten Dingen.':'Questions and photos go through our server to Google (Gemini). The server only stores a random device ID for the daily limit. Do not send photos of people or private things.',
 'Bei Überlastung probiert die App andere Modelle. Warte kurz und versuch es dann erneut.':'When the service is overloaded the app tries other models. Wait a moment and then try again.'
 });
+
+
+Object.assign(EN,{
+'BEARBEITEN':'EDIT','KAMERA':'CAMERA','GALERIE':'GALLERY','EIGENES REZEPT SCHREIBEN':'WRITE YOUR OWN RECIPE','Name':'Name','Foto':'Photo','Foto gespeichert.':'Photo saved.','Das Foto konnte nicht gespeichert werden.':'The photo could not be saved.',
+'Es passen höchstens 50 Rezepte in die Liste.':'The list holds at most 50 recipes.','Wie heißt dein Rezept?':'What is your recipe called?','Rezept angelegt. Trag Zutaten und Schritte ein.':'Recipe created. Add ingredients and steps.','„{0}“ wirklich löschen?':'Really delete "{0}"?',
+'Diktieren':'Dictate','Antworten vorlesen':'Read answers aloud','Vorlesen':'Read aloud','Ich lese dir die Antworten vor.':'I will read the answers to you.',
+'Bitte erlaube den Zugriff aufs Mikrofon.':'Please allow access to the microphone.','Diktieren hat nicht geklappt.':'Dictation did not work.','Dein Browser kann hier nicht diktieren. Nutze das Mikrofon auf deiner Tastatur.':'Your browser cannot dictate here. Use the microphone on your keyboard.',
+'Diktieren und Vorlesen':'Dictation and reading aloud','Beim Diktieren nutzt die App die Spracherkennung deines Browsers. Je nach Gerät verarbeitet sie Google oder Apple. Vorlesen läuft über die Sprachausgabe deines Geräts.':'Dictation uses your browser\'s speech recognition, which Google or Apple process depending on your device. Reading aloud uses your device\'s speech output.'
+});
+
+Object.assign(EN,{'Vollständige Datenschutzerklärung und Impressum':'Full privacy policy and legal notice'});
+
+Object.assign(EN,{'Erinnerungen kommen zu spät':'Reminders arrive late','Unser Server schickt sie pünktlich, aber Akkusparen auf dem Handy kann sie aufhalten. Samsung: Einstellungen, Akku, Hintergrundnutzungslimits, „Nie schlafende Apps“ und dort Chrome und LilDough hinzufügen. Andere Android-Handys: in den App-Infos von Chrome unter Akku „Nicht eingeschränkt“ wählen.':'Our server sends them on time, but battery saving on the phone can hold them back. Samsung: Settings, Battery, Background usage limits, "Never sleeping apps", then add Chrome and LilDough. Other Android phones: in the app info of Chrome under Battery choose "Unrestricted".'});
