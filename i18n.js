@@ -347,3 +347,11 @@ Object.assign(EN,{
 Object.assign(EN,{'Vollständige Datenschutzerklärung und Impressum':'Full privacy policy and legal notice'});
 
 Object.assign(EN,{'Erinnerungen kommen zu spät':'Reminders arrive late','Unser Server schickt sie pünktlich, aber Akkusparen auf dem Handy kann sie aufhalten. Samsung: Einstellungen, Akku, Hintergrundnutzungslimits, „Nie schlafende Apps“ und dort Chrome und LilDough hinzufügen. Andere Android-Handys: in den App-Infos von Chrome unter Akku „Nicht eingeschränkt“ wählen.':'Our server sends them on time, but battery saving on the phone can hold them back. Samsung: Settings, Battery, Background usage limits, "Never sleeping apps", then add Chrome and LilDough. Other Android phones: in the app info of Chrome under Battery choose "Unrestricted".'});
+
+Object.assign(EN,{
+'OFEN':'OVEN','{0} Ober-/Unterhitze':'{0} top and bottom heat','Ober-/Unterhitze {0}, bei Umluft etwa {1}':'Top and bottom heat {0}, with fan about {1}','Dauer ca. {0} bis {1} Min':'About {0} to {1} min',
+'Den Topf mit Deckel gleich mit aufheizen.':'Heat the pot with its lid at the same time.','Untere Schiene. Mit Deckel entsteht Dampf, also den Ofen nicht öffnen.':'Lower rack. The lid traps steam, so keep the oven closed.',
+'Mit Dampf: eine Schale mit heißem Wasser auf den Ofenboden stellen und nach 10 Min den Dampf kurz ablassen.':'With steam: put a tray of hot water on the oven floor and let the steam out briefly after 10 min.','Unteres Drittel, ohne Dampf.':'Lower third, no steam.',
+'Fertig, wenn die Kruste kräftig braun ist und der Boden beim Klopfen hohl klingt. Innen hat das Brot dann etwa {0}.':'Done when the crust is deep brown and the bottom sounds hollow when tapped. Inside the bread is then about {0}.',
+'{0} ist fertig':'{0} is done','Tippe auf „Erledigt“, dann plane ich den nächsten Schritt.':'Tap "Done" and I will plan the next step.','Erledigt':'Done','„{0}“ läuft noch.':'"{0}" is still running.','„{0}“ erledigt.':'"{0}" done.'
+});
