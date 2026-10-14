@@ -3,7 +3,7 @@ const SB_URL='https://rsirxtxeiolsaultreuz.supabase.co';
 const SB_KEY='sb_publishable_VYVOJ--pfOlhIES2swipGg_E33b0185';
 const CONTACT=''; // Kontakt für die Datenschutzerklärung, z. B. 'name@example.com' (leer = Zeile wird nicht angezeigt)
 const IMPRESSUM={name:'',addr:'',mail:CONTACT}; // Pflichtangaben nach § 5 DDG, vor dem Launch ausfüllen (Name, Straße, PLZ Ort)
-const BUILD='33';
+const BUILD='34';
 const $=id=>document.getElementById(id);
 const LS={get:(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}},del:k=>{try{localStorage.removeItem(k)}catch{}}};
 const ICON=n=>`<svg class="ic"><use href="#i-${n}"/></svg>`;
@@ -315,6 +315,27 @@ function schedule(b){ // projizierte Startzeiten; sh[i]: wegen Ruhezeit verschob
   }
   return {T,sh};
 }
+
+/* ---------- Ofen: Temperatur, Einstellung und Dauer für jeden Backschritt ---------- */
+const POT=['weizen','dinkel','koerner','vollkorn','roggen','mischbrot','walnuss','kartoffel','sonnenblumen']; // im Topf gebacken
+const OVEN={ciabatta:{bake:{t:250,m:[20,25],how:'steam',core:96}},baguette:{bake:{t:250,m:[20,25],how:'steam',core:96}},
+  broetchen:{bake:{t:240,m:[18,22],how:'steam'}},focaccia:{bake:{t:230,m:[20,25],how:'low'}}};
+function ovenFor(b,s){
+  if(!b||b.raw||!s)return null;const ti=s.title;
+  const k=/vorheiz/i.test(ti)?'pre':/mit Deckel/i.test(ti)?'lid':/ohne Deckel/i.test(ti)?'open':/^Backen$/i.test(ti)?'bake':null;if(!k)return null;
+  if(POT.includes(b.slug)){const rog=b.slug==='roggen',core=rog||b.slug==='vollkorn'?98:96;
+    return ({pre:{t:250,m:[45,60],how:'pot'},lid:{t:250,m:rog?[30,35]:[20,25],how:'lowrack'},open:{t:220,m:rog?[10,15]:[15,25],core}})[k]||null}
+  return (OVEN[b.slug]||{})[k]||null;
+}
+const ovenShort=o=>tr('{0} Ober-/Unterhitze',tStr(o.t));
+function ovenHTML(o){
+  const tips={pot:tr('Den Topf mit Deckel gleich mit aufheizen.'),lowrack:tr('Untere Schiene. Mit Deckel entsteht Dampf, also den Ofen nicht öffnen.'),
+    steam:tr('Mit Dampf: eine Schale mit heißem Wasser auf den Ofenboden stellen und nach 10 Min den Dampf kurz ablassen.'),low:tr('Unteres Drittel, ohne Dampf.')};
+  const L=[tr('Ober-/Unterhitze {0}, bei Umluft etwa {1}',tStr(o.t),tStr(o.t-20)),tr('Dauer ca. {0} bis {1} Min',o.m[0],o.m[1])];
+  if(o.how)L.push(tips[o.how]);
+  if(o.core)L.push(tr('Fertig, wenn die Kruste kräftig braun ist und der Boden beim Klopfen hohl klingt. Innen hat das Brot dann etwa {0}.',tStr(o.core)));
+  return `<div class="oven"><b>${ICON('flame')} ${esc(tr('OFEN'))}</b>${L.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`;
+}
 function render(){
   const b=pb();
   $('setup').hidden=!!b;$('plan').hidden=!b;
@@ -335,8 +356,9 @@ function render(){
     h+=`<div class="step ${cls}"><div class="t"><span><span class="n">${i+1}</span>${esc(td(s.title))}</span><span class="when">${when}</span></div>`;
     if(i===plan.idx){
       const end=stepEnd(s,plan.starts[i]),late=end!==plan.starts[i]+s.minutes*6e4;
-      h+=`<p>${esc(td(s.description))}</p><div class="count" id="count" role="timer" aria-live="off">--:--</div><p class="muted">${esc(durTxt(s,i))}${/Falten/.test(s.title)?' · '+esc(tr('Erinnerung alle {0} Min',foldGap(s))):''}</p>${late?`<p class="muted">${ICON('moon')} ${esc(tr('Wegen der Ruhezeit erst um {0}.',hhmm(end)))}</p>`:''}<button class="btn" id="doneBtn">${esc(i===S.length-1?tr('FERTIG, GUTEN APPETIT'):tr('SCHRITT ERLEDIGT'))}</button>`;
-    }else if(i>plan.idx)h+=`<p class="muted" style="margin:4px 0 0">${esc(durTxt(s,i))}</p>`;
+      const ov=ovenFor(b,s);
+      h+=`<p>${esc(td(s.description))}</p>${ov?ovenHTML(ov):''}<div class="count" id="count" role="timer" aria-live="off">--:--</div><p class="muted">${esc(durTxt(s,i))}${/Falten/.test(s.title)?' · '+esc(tr('Erinnerung alle {0} Min',foldGap(s))):''}</p>${late?`<p class="muted">${ICON('moon')} ${esc(tr('Wegen der Ruhezeit erst um {0}.',hhmm(end)))}</p>`:''}<button class="btn" id="doneBtn">${esc(i===S.length-1?tr('FERTIG, GUTEN APPETIT'):tr('SCHRITT ERLEDIGT'))}</button>`;
+    }else if(i>plan.idx){const ov=ovenFor(b,s);h+=`<p class="muted" style="margin:4px 0 0">${esc(durTxt(s,i))}${ov?' · '+esc(ovenShort(ov)):''}</p>`}
     h+='</div>';
   });
   $('steps').innerHTML=h;
@@ -355,10 +377,23 @@ const foldGap=s=>Math.max(5,Math.round(s.minutes/4/5)*5); // 4 Faltrunden gleich
 function eventsFor(b,i,st){ // Erinnerungen eines Schritts, der um st beginnt
   const s=b.bread_steps[i],nx=b.bread_steps[i+1],E=[];
   if(/Falten/.test(s.title))for(let n=1;n<=3;n++){const t=st+n*foldGap(s)*6e4;if(adj(t)===t)E.push({k:`${i}:f${n}`,t,title:tr('Dehnen und Falten'),body:tr('Runde {0} von 4: Teig einmal dehnen und falten.',n+1)})}
-  E.push({k:`${i}:end`,t:stepEnd(s,st),title:tr('{0}: fertig',td(s.title)),body:nx?tr('Weiter mit: {0}',td(nx.title)):tr('Dein Brot ist durch. Gut auskühlen lassen!')});
+  const en=stepEnd(s,st),ov=ovenFor(b,nx);
+  E.push({k:`${i}:end`,t:en,kind:'end',title:tr('{0}: fertig',td(s.title)),body:nx?tr('Weiter mit: {0}',td(nx.title))+(ov?' · '+ovenShort(ov):''):tr('Dein Brot ist durch. Gut auskühlen lassen!')});
+  // Nicht bestätigt? Nachfragen statt Meldungen zu Schritten, die noch gar nicht dran sind
+  [20,60].forEach((m,n)=>{const t=en+m*6e4;if(adj(t)===t)E.push({k:`${i}:n${n+1}`,t,kind:'end',title:tr('{0} ist fertig',td(s.title)),body:tr('Tippe auf „Erledigt“, dann plane ich den nächsten Schritt.')})});
   return E;
 }
 function events(){const b=pb();return b?eventsFor(b,plan.idx,plan.starts[plan.idx]):[]}
+
+// „Erledigt“ in der Mitteilung: Schritt abschließen, wenn er wirklich fertig ist
+function doneFromNotif(tries=0){
+  if(!plan)return;const b=pb();if(!b){if(tries<20)setTimeout(()=>doneFromNotif(tries+1),300);return}
+  const s=b.bread_steps[plan.idx];
+  if(stepEnd(s,plan.starts[plan.idx])>Date.now()+6e4)return toast(tr('„{0}“ läuft noch.',td(s.title)));
+  const t=td(s.title);nextStep();toast(tr('„{0}“ erledigt.',t));
+}
+navigator.serviceWorker?.addEventListener('message',e=>{if(e.data&&e.data.type==='done')doneFromNotif()});
+if(new URLSearchParams(location.search).get('done')){try{history.replaceState(null,'',location.pathname)}catch{}setTimeout(doneFromNotif,500)}
 
 /* ---------- Push (auch bei geschlossener App, über Supabase) ---------- */
 const PUSH=SB_URL+'/functions/v1/push-api';
@@ -376,7 +411,8 @@ async function ensurePush(){
     pushEp=j.endpoint;pushOn=true;notifState();return pushEp;
   }catch(e){pushOn=false;return null}
 }
-// Schickt alle anstehenden Erinnerungen an den Server; der verschickt sie zur richtigen Zeit per Push
+// Schickt die Erinnerungen des aktuellen Schritts an den Server. Die nächsten folgen erst, wenn der Schritt erledigt ist,
+// damit nie eine Meldung zu einem Schritt kommt, der noch gar nicht dran ist.
 function syncPush(force){
   clearTimeout(pushT);
   pushT=setTimeout(async()=>{
@@ -384,8 +420,7 @@ function syncPush(force){
     if(!b&&!pushEp)return;
     const ep=await ensurePush();if(!ep)return;
     let jobs=[];
-    if(b){const {T}=schedule(b),now=Date.now();
-      for(let i=plan.idx;i<b.bread_steps.length;i++)eventsFor(b,i,i===plan.idx?plan.starts[i]:T[i]).forEach(e=>{if(e.t>now)jobs.push({t:e.t,title:e.title,body:e.body})});}
+    if(b){const now=Date.now();eventsFor(b,plan.idx,plan.starts[plan.idx]).forEach(e=>{if(e.t>now)jobs.push({t:e.t,title:e.title,body:e.body,kind:e.kind||null})})}
     const sig=JSON.stringify(jobs);if(!force&&sig===pushLast)return;
     try{const r=await pushCall(jobs.length?{action:'schedule',endpoint:ep,jobs}:{action:'cancel',endpoint:ep});if(r.ok)pushLast=sig}catch{}
   },600);
@@ -395,7 +430,7 @@ function tick(){
   const b=pb(),s=b.bread_steps[plan.idx],end=stepEnd(s,plan.starts[plan.idx]),left=end-Date.now(),c=$('count');
   if(c){const a=Math.abs(left)/1e3,H=Math.floor(a/3600),M=Math.floor(a%3600/60),S=Math.floor(a%60),p=n=>String(n).padStart(2,'0');
     c.textContent=(left<0?'+':'')+(H?H+':':'')+p(M)+':'+p(S);c.style.color=left<0?'#a33':''}
-  events().forEach(e=>{if(e.t<=Date.now()&&!plan.fired.includes(e.k)){plan.fired.push(e.k);LS.set('sb_plan',plan);notify(e.title,e.body)}});
+  events().forEach(e=>{if(e.t<=Date.now()&&!plan.fired.includes(e.k)){plan.fired.push(e.k);LS.set('sb_plan',plan);notify(e.title,e.body,e.kind)}});
 }
 setInterval(tick,1000);document.addEventListener('visibilitychange',()=>!document.hidden&&tick());
 let actx;
@@ -415,10 +450,11 @@ function notifState(){
     :Notification.permission==='denied'?tr('Benachrichtigungen sind blockiert. Erlaube sie in den Browser- oder Handy-Einstellungen für diese Seite.'):tr('Noch nicht aktiviert.');
   document.querySelectorAll('[data-notif]').forEach(n=>n.textContent=txt);
 }
-function notify(title,body){
+function notify(title,body,kind){
   toast(`${title}: ${body}`);navigator.vibrate&&navigator.vibrate([300,150,300,150,300]);beep();
   if('Notification' in window&&Notification.permission==='granted'){
-    const o={body,icon:'icon-192.png',badge:'badge-96.png',tag:'step',renotify:true,requireInteraction:true,vibrate:[300,150,300,150,300]};
+    const o={body,icon:'icon-192.png',badge:'badge-96.png',tag:'step',renotify:true,requireInteraction:true,vibrate:[300,150,300,150,300],data:{kind:kind||null}};
+    if(kind==='end')o.actions=[{action:'done',title:tr('Erledigt')}];
     navigator.serviceWorker?.ready.then(r=>r.showNotification(title,o)).catch(()=>{try{new Notification(title,o)}catch{}});
   }
 }
